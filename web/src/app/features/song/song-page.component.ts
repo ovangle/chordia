@@ -15,7 +15,7 @@ function fetchSongApiPath(songId: any) {
   template: `
     <ng-container *ngIf="song$ | async as song">
       <h1>
-        <span>{{song.artistName}} - Flume</span>
+        <span>{{song.artistName}} - {{song.name}}</span>
         <button mat-button routerLink="/songs">
           <mat-icon>home</mat-icon>
           Home
