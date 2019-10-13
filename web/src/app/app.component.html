@@ -1,5 +1,19 @@
+<mat-toolbar color="primary">
+  <a aria-label="chordia" mat-button routerLink="/">
+    <span class="mat-button-wrapper">
+      <mat-icon>music_note</mat-icon>
+      <span>chordia</span>
+    </span>
+  </a>
+</mat-toolbar>
 
-
-<div class="content container-fluid" role="main">
-  <router-outlet></router-outlet>
-</div>
+<mat-sidenav-container class="content">
+  <mat-sidenav mode="side" opened>
+    Sidenav content
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <div class="content container-fluid" role="main">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

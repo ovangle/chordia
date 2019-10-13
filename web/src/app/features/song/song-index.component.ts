@@ -1,24 +1,22 @@
-import {Component, OnDestroy} from "@angular/core";
-
-import {environment} from '../../../environments/environment';
-import {BehaviorSubject, Subscription} from "rxjs";
-import {ActivatedRoute} from "@angular/router";
-import {HttpClient} from "@angular/common/http";
-import {map, switchMap} from "rxjs/operators";
-import {SongMinimal, songMinimalFromJson} from "./song.model";
-import {fromArray} from "../../common/json/json";
-
-const songIndexApiPath = `${environment.apiPath}/api/songs.json`
+import {Component, OnDestroy} from '@angular/core';
+import {BehaviorSubject, Subscription} from 'rxjs';
+import {ActivatedRoute} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import {map, switchMap} from 'rxjs/operators';
+import {fromArray} from '../../common/json/json';
+import {SongMinimal, SongModelService} from './song.model-service';
 
 @Component({
   template: `
-    <ul> 
+    <ul>
       <li *ngFor="let song of songs$ | async">
         <a [routerLink]="['/songs', song.id]">{{song.artistName}} - {{song.name}}</a>
       </li>
-      
     </ul>
-  `
+  `,
+  providers: [
+    SongModelService
+  ]
 })
 export class SongIndexComponent implements OnDestroy {
   readonly songs$ = new BehaviorSubject<ReadonlyArray<SongMinimal>>([]);
@@ -26,14 +24,13 @@ export class SongIndexComponent implements OnDestroy {
   private routeSubscription: Subscription;
 
   constructor(
-    readonly http: HttpClient,
-    readonly route: ActivatedRoute
+    readonly route: ActivatedRoute,
+    readonly model: SongModelService
   ) {
     this.routeSubscription = this.route.url.pipe(
-      switchMap(() => this.http.get<any>(songIndexApiPath)),
-      map(response => fromArray((item) => songMinimalFromJson(item))(response['items']))
+      switchMap(url => this.model.index().getPage(1)),
     ).subscribe(songs => {
-      this.songs$.next(songs);
+      this.songs$.next(songs.items);
     });
 
   }

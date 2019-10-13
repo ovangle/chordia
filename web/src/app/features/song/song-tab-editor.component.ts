@@ -1,6 +1,6 @@
 import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from "@angular/core";
-import {Song} from "./song.model";
 import {BehaviorSubject} from "rxjs";
+import {Song} from './song.model-service';
 
 
 @Component({
@@ -11,7 +11,7 @@ import {BehaviorSubject} from "rxjs";
         <div class="editor">
 
           <textarea autofocus
-                    [ngModel]="song.content" 
+                    [ngModel]="song.content"
                     (ngModelChange)="updateContent($event)"></textarea>
 
           <div class="editor-controls">
@@ -52,11 +52,11 @@ import {BehaviorSubject} from "rxjs";
           flex-grow: 1;
           position: relative;
       }
-      
+
       textarea {
           height: calc(100% - 2rem);
           width: 100%;
-          
+
           font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
           line-height: 1.15;
           font-size: 87.5%
@@ -67,7 +67,7 @@ import {BehaviorSubject} from "rxjs";
           right: 2rem;
           top: 1rem;
       }
-    
+
     ::ng-deep song-tab-controls {
         margin-left: 2rem;
     }

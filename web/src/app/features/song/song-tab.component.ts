@@ -1,11 +1,11 @@
 import {Component, ElementRef, EventEmitter, Input, Output} from "@angular/core";
-import {Song} from "./song.model";
+import {Song} from './song.model-service';
 
 @Component({
   selector: 'app-song-tab',
   template: `
     <ng-container *ngIf="song">
-      <song-tab-editor [song]="song" 
+      <song-tab-editor [song]="song"
                        (save)="songChange.emit($event)">
         <code>
           <pre [innerHTML]="song.content | chordify: {
@@ -29,13 +29,13 @@ import {Song} from "./song.model";
         position: relative;
         flex-grow: 1;
     }
-    
+
     code {
         display: block;
         flex-grow: 1;
         border: 1px solid black;
         padding: 1rem 2rem;
-        
+
         line-height: 1.15;
     }
 

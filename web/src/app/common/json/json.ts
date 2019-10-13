@@ -1,65 +1,64 @@
 import {isJsonArray, isJsonObject, isJsonRef, JsonObject} from './types';
 
-export type Decoder<T> = (obj: unknown, path?: string[]) => T;
+export type Decoder<T> = (obj: unknown, ...path: string[]) => T;
 
-export function fromString(obj: unknown, path: string[] = []): string {
+export function fromString(obj: unknown, ...path: string[]): string {
   if (typeof obj !== 'string') {
-    throw new TypeError(`Expected a string at ${path.join('')}, got ${obj}`);
+    throw new TypeError(`Expected a string at '$.${path.join('')}', got ${obj}`);
   }
   return obj;
 }
 
-export function fromNumber(obj: unknown, path: string[] = []): number {
+export function fromNumber(obj: unknown, ...path: string[]): number {
   if (typeof obj !== 'number') {
-    throw new TypeError(`Expected a number at ${path.join('')}, got ${obj}`);
+    throw new TypeError(`Expected a number at '$.${path.join('')}', got ${obj}`);
   }
   return obj;
 }
 
-export function fromBoolean(obj: unknown, path: string[] = []): boolean {
+export function fromBoolean(obj: unknown, ...path: string[]): boolean {
   if (typeof obj !== 'boolean') {
-    throw new TypeError(`Expected a boolean at ${path.join('')}, got ${obj}`);
+    throw new TypeError(`Expected a boolean at '$.${path.join('')}', got ${obj}`);
   }
   return obj;
 }
 
 export function fromArray<T>(fromItem: Decoder<T>): Decoder<T[]> {
-  return function (obj: unknown, path: string[] = []) {
+  return (obj: unknown, ...path: string[]) => {
     if (!Array.isArray(obj)) {
-      throw new TypeError(`Expected an array at ${path.join('')}`);
+      throw new TypeError(`Expected an array at '$.${path.join('')}'`);
     }
     return obj.map((item, index) => {
-      path = [...path, `[${index}]`];
-      return fromItem(item, path);
+      return fromItem(item, ...path, `[${index}]`);
     });
   };
 }
 
 export function fromNullable<T>(decoder: Decoder<T>): Decoder<T | null> {
-  return function (obj: unknown, path: string[] = []) {
+  return (obj: unknown, ...path: string[]) => {
     if (obj == null) {
       return null;
     } else {
-      return decoder(obj);
+      return decoder(obj, ...path);
     }
   };
 }
 
-export type PropertyDecoder<T> = (props: JsonObject, path?: string[]) => T;
+export type PropertyDecoder<T> = (props: JsonObject, ...path: string[]) => T;
 
 
 export function fromObject<T>(decodeProperties: PropertyDecoder<T>): Decoder<T>;
 export function fromObject<T>(decodeProperties: PropertyDecoder<T>, nullable: true): Decoder<T | null>;
 
 export function fromObject<T>(decodeProperties: PropertyDecoder<T>, nullable: boolean = false): Decoder<T | null> {
-  return function (obj: unknown, path: string[] = []) {
+  return (obj: unknown, ...path: string[]) => {
     if (nullable && obj == null) {
       return null;
     }
     if (!isJsonObject(obj)) {
       throw new TypeError(`Expected an object at ${path.join('')}`);
     }
-    return decodeProperties(obj as {[K in keyof T]: unknown}, path);
+    return decodeProperties(obj as {[K in keyof T]: unknown}, ...path);
   };
 }
 
@@ -78,12 +77,10 @@ export interface NullableDecoder<T> {
 }
 
 
-
-
 export function fromJson<T>(select: SelectDecoder<T>): Decoder<T>;
 export function fromJson<T>(select: SelectDecoder<T> & NullableDecoder<T>): Decoder<T | null>;
 export function fromJson<T>(select: SelectDecoder<T> & Partial<NullableDecoder<T>>): Decoder<T | null> {
-  return function (json: unknown, path: string[] = []) {
+  return (json: unknown, ...path: string[]) => {
     if (json === null) {
       return fromNull(select);
     }
@@ -117,7 +114,7 @@ export function fromJson<T>(select: SelectDecoder<T> & Partial<NullableDecoder<T
   };
 }
 
-function fromNull<T>(options: {ifNull?: (() => T) | null }, path: string[] = []): T | null {
+function fromNull<T>(options: {ifNull?: (() => T) | null }, ...path: string[]): T | null {
   if (options.ifNull === null) {
     return null;
   } else if (options.ifNull) {

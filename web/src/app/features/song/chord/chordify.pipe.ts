@@ -1,6 +1,5 @@
-import {Pipe, PipeTransform} from "@angular/core";
-import {formatChord, parseChord, transposeChord} from "./chord.model";
-import {Song} from "../song.model";
+import {Pipe, PipeTransform} from '@angular/core';
+import {formatChord, parseChord, transposeChord} from './chord.model';
 
 
 @Pipe({
@@ -20,7 +19,7 @@ export class ChordifyPipe implements PipeTransform {
         const afterIndex = input.length - remaining.length;
         if (/^(\s|$)/.test(input.slice(afterIndex))) {
           const chord1 = transposeChord(chord, transposeInterval);
-          output += `<span class="chord">${formatChord(chord1)}</span>`
+          output += `<span class="chord">${formatChord(chord1)}</span>`;
           index = afterIndex;
           continue;
         }

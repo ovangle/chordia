@@ -11,6 +11,7 @@ import {SongTabEditorComponent} from "./song-tab-editor.component";
 import {MatButtonModule} from "@angular/material/button";
 import {MatIconModule} from "@angular/material/icon";
 import {SongIndexComponent} from "./song-index.component";
+import {ApiCommonModule} from '../../common/api/api-common.module';
 
 
 @NgModule({
@@ -30,7 +31,9 @@ import {SongIndexComponent} from "./song-index.component";
         path: ':id',
         component: SongPageComponent
       }
-    ])
+    ]),
+
+    ApiCommonModule
   ],
   declarations: [
     SongIndexComponent,
